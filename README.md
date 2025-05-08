@@ -1,16 +1,29 @@
-# rrk_stream_app
+# 📡 RRK Stream App
+## State Management
+- [setState](https://github.com/RRKawchar/live_streaming_demo/tree/setState)
+- [getxState](https://docs.flutter.dev/cookbook)
 
-A new Flutter project.
+## Features
 
-## Getting Started
+- 🎥 **Live Video Streaming**  
+  Streamers can broadcast live video sessions in real-time using their device's camera and microphone.
 
-This project is a starting point for a Flutter application.
+- 🎧 **Audio Support**  
+  Includes full audio functionality so users can speak, listen, and control audio in sessions.
 
-A few resources to get you started if this is your first Flutter project:
+- 🔄 **Camera Switching**  
+  Streamers can toggle between front and rear cameras during a live session.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- 🔇 **Audience Audio Mute**  
+  Streamers have control to mute audience members if needed.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- 🧠 **Multiple State Management Implementations**  
+  The project demonstrates the use of different state management techniques in separate branches:
+  
+## 📱 App Screenshots
+![features_image](https://github.com/user-attachments/assets/c49a7456-abda-47a4-82c4-64aa354f955b)
+
+## Description about the app
+**RRK Stream** is a Flutter-based **live video streaming** app built using the powerful [Agora SDK](https://www.agora.io/). 
+The app allows streamers to broadcast live video with audio, while viewers can join in real-time as the audience.
+It also supports switching cameras, muting audience audio, and more — making it ideal for interactive broadcasting experiences.
