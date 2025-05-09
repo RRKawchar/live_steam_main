@@ -1,7 +1,7 @@
 # 📡 RRK Stream App
 ## State Management
-- [setState](https://github.com/RRKawchar/live_streaming_demo/tree/setState)
-- [getxState](https://docs.flutter.dev/cookbook)
+- [setState](https://github.com/RRKawchar/live_steam_main)
+- [getxState](https://github.com/RRKawchar/live_steam_main/tree/getxBranch)
 
 ## Features
 
