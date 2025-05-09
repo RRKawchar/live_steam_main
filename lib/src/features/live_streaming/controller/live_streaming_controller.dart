@@ -19,6 +19,7 @@ class LiveStreamingController extends GetxController{
   RxBool muted = false.obs;
   RxString audioFilePath = "".obs;
   RxBool showUI = false.obs;
+  RxBool isPaused = false.obs;
 
   RtcEngine get engine=>_engine;
 
@@ -75,28 +76,37 @@ class LiveStreamingController extends GetxController{
     audioPlayer = AudioPlayer();
   }
 
-
   Future<void> playAudio() async {
     final path = audioFilePath.value;
-    update();
     if (path.isEmpty) return;
 
     try {
-      await _engine.startAudioMixing(filePath: path, loopback: false, cycle: 1);
-        isPlaying.value = true;
-         update();
+      if (isPaused.value) {
+        await _engine.resumeAudioMixing();
+        isPaused.value = false;
+      } else {
+        await _engine.startAudioMixing(filePath: path, loopback: false, cycle: 1);
+      }
+      isPlaying.value = true;
+      update();
     } catch (e) {
-      kPrint("Error starting audio mixing: $e");
+      kPrint("Error playing/resuming audio mixing: $e");
     }
   }
 
+
   Future<void> stopAudio() async {
     await _engine.stopAudioMixing();
-    update();
       isPlaying.value = false;
       update();
   }
 
+  Future<void> pauseAudio() async {
+    await _engine.pauseAudioMixing();
+    isPaused.value = true;
+    isPlaying.value = false;
+    update();
+  }
 
   Future<void> initAgora() async {
     await _requestPermissions();

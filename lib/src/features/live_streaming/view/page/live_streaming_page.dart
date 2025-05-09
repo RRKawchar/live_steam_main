@@ -41,17 +41,14 @@ class LiveStreamingPage extends StatelessWidget {
 
               streamingController.showUI.value
                   ? SizedBox.shrink()
-                  : Positioned(
-                    bottom: 100,
-                   child: AudioPlayerWidget(
-                     streamingController: streamingController,
-                   )
-              ),
+                  : AudioPlayerWidget(
+                    streamingController: streamingController,
+                  ),
 
               streamingController.showUI.value
                   ? SizedBox.shrink()
                   : LiveControlButtons(
-                  streamingController: streamingController,
+                   streamingController: streamingController,
               ),
 
             ],
