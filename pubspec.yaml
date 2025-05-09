@@ -42,6 +42,7 @@ dependencies:
   flutter_native_splash:
   flutter_easyloading:
   flutter_dotenv:
+  provider:
 
 #This package generates native code to customize Flutter's default white native splash screen
 flutter_native_splash:
