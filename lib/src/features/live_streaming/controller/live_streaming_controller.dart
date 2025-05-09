@@ -32,6 +32,7 @@ class LiveStreamingController extends GetxController{
   void onToggleMute() {
       muted.value = !muted.value;
       _engine.muteLocalAudioStream(muted.value);
+      update();
   }
 
 
@@ -39,8 +40,8 @@ class LiveStreamingController extends GetxController{
     String? path = await AudioFilePickerService.pickedFile();
       audioFilePath.value = path!;
     kPrint("Audio File Path: $audioFilePath");
-
     audioFileController.text = _convertAudioFileName();
+    update();
   }
 
 
@@ -98,6 +99,7 @@ class LiveStreamingController extends GetxController{
   Future<void> stopAudio() async {
     await _engine.stopAudioMixing();
       isPlaying.value = false;
+      isPaused.value=false;
       update();
   }
 
