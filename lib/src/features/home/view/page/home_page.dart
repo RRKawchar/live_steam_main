@@ -1,4 +1,7 @@
+import 'package:get/get.dart';
 import 'package:rrk_stream_app/src/core/core_export/home_export_path.dart';
+import 'package:rrk_stream_app/src/core/routes/routes_name.dart';
+import 'package:rrk_stream_app/src/features/home/controller/home_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -8,7 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
+  final HomeController homeController=Get.find<HomeController>();
    late TextEditingController _channelName;
 
   @override
@@ -93,10 +96,7 @@ class _HomePageState extends State<HomePage> {
         EasyLoading.showToast("Channel Name is required!");
         return;
     }
-
-    Navigator.push(context, MaterialPageRoute(builder: (_)=>LiveStreamingPage(
-      isBroadcaster: isBroadcaster,
-      channelName: _channelName.text.trim(),
-    )));
+    homeController.setData(isBroadcaster: isBroadcaster, channelName: _channelName.text.trim());
+    Get.toNamed(RoutesName.liveStreamingPage);
   }
 }

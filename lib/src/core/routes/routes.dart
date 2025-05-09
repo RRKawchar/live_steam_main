@@ -7,9 +7,8 @@ class Routes{
 
   static List<GetPage> routes=[
     GetPage(name: RoutesName.homePage,page: ()=>const HomePage()),
-    // GetPage(name: RoutesName.liveStreamingPage,page: ()=>const LiveStreamingPage(
-    //     isBroadcaster: isBroadcaster, channelName: channelName
-    // )),
+    GetPage(name: RoutesName.liveStreamingPage,page: ()=>const LiveStreamingPage(
+    )),
   ];
 
 

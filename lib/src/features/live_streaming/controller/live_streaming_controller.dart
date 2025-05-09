@@ -3,11 +3,13 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import '../../../core/env/env.dart';
+import '../../../core/helpers/helper_method.dart';
+import '../../../core/service/audio_file_picker_service.dart';
+import '../../home/controller/home_controller.dart';
 
 class LiveStreamingController extends GetxController{
-
+  final HomeController homeController=Get.find<HomeController>();
   late TextEditingController audioFileController;
   late final AudioPlayer audioPlayer;
   late RtcEngine _engine;
@@ -20,14 +22,83 @@ class LiveStreamingController extends GetxController{
 
   RtcEngine get engine=>_engine;
 
-  @override
-  void onInit() {
-    audioFileController=TextEditingController();
-    super.onInit();
+
+  void onSwitchCamera() {
+    engine.switchCamera();
   }
 
 
-  Future<void> _initAgora() async {
+  void onToggleMute() {
+      muted.value = !muted.value;
+      _engine.muteLocalAudioStream(muted.value);
+  }
+
+
+  void pickAudioFile() async {
+    String? path = await AudioFilePickerService.pickedFile();
+      audioFilePath.value = path!;
+    kPrint("Audio File Path: $audioFilePath");
+
+    audioFileController.text = _convertAudioFileName();
+  }
+
+
+  String _convertAudioFileName() {
+    String text = "";
+    if (audioFilePath.value.isNotEmpty) {
+      text = audioFilePath.value.split('/').last;
+    }
+    return text;
+  }
+
+  @override
+  void onInit() {
+    audioFileController=TextEditingController();
+    kPrint("isBroadCaster : ${homeController.isBroadcaster}");
+    kPrint("ChannelName : ${homeController.channelName}");
+    super.onInit();
+     initAgora();
+     initAudioPlayer();
+  }
+
+
+  @override
+  void dispose() {
+    _engine.leaveChannel();
+    _engine.release();
+    audioPlayer.dispose();
+    super.dispose();
+  }
+
+
+  void initAudioPlayer() {
+    audioPlayer = AudioPlayer();
+  }
+
+
+  Future<void> playAudio() async {
+    final path = audioFilePath.value;
+    update();
+    if (path.isEmpty) return;
+
+    try {
+      await _engine.startAudioMixing(filePath: path, loopback: false, cycle: 1);
+        isPlaying.value = true;
+         update();
+    } catch (e) {
+      kPrint("Error starting audio mixing: $e");
+    }
+  }
+
+  Future<void> stopAudio() async {
+    await _engine.stopAudioMixing();
+    update();
+      isPlaying.value = false;
+      update();
+  }
+
+
+  Future<void> initAgora() async {
     await _requestPermissions();
     _engine = createAgoraRtcEngine();
     await _engine.initialize(
@@ -39,20 +110,30 @@ class LiveStreamingController extends GetxController{
 
     await _engine.enableVideo();
     await _engine.setClientRole(
-      role:ClientRoleType.clientRoleBroadcaster
+      role:homeController.isBroadcaster?
+      ClientRoleType.clientRoleBroadcaster
+      :ClientRoleType.clientRoleAudience
     );
-    await _engine.startPreview();
 
+    if(homeController.isBroadcaster){
+      try{
+        await _engine.startPreview();
+      }catch(e){
+       kPrint(e.toString());
+      }
+    }
 
     _setupEventHandlers();
 
     await _engine.joinChannel(
       token: kToken,
-      channelId: 'rrk-live',
-      uid:0,
+      channelId: homeController.channelName!,
+      uid:homeController.isBroadcaster?0:0,
       options: ChannelMediaOptions(
         channelProfile: ChannelProfileType.channelProfileLiveBroadcasting,
-        clientRoleType: ClientRoleType.clientRoleBroadcaster,
+        clientRoleType:homeController.isBroadcaster?
+        ClientRoleType.clientRoleBroadcaster:
+        ClientRoleType.clientRoleAudience,
         autoSubscribeVideo: true,
         autoSubscribeAudio: true,
       ),
@@ -70,6 +151,7 @@ class LiveStreamingController extends GetxController{
 
             if (!remoteUids.contains(remoteUid)) {
               remoteUids.add(remoteUid);
+              update();
             }
 
           debugPrint("Remote user $remoteUid joined");
@@ -81,7 +163,7 @@ class LiveStreamingController extends GetxController{
             ) {
 
             remoteUids.remove(remoteUid);
-
+            update();
           debugPrint("Remote user $remoteUid left");
         },
       ),
@@ -95,6 +177,16 @@ class LiveStreamingController extends GetxController{
       throw Exception('Permissions not granted');
     }
   }
+
+
+
+  void endLiveStream() async {
+    await engine.leaveChannel();
+    await engine.release();
+     Get.back();
+  }
+
+
 
 
 }
