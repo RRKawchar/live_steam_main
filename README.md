@@ -2,6 +2,7 @@
 ## State Management
 - [setState](https://github.com/RRKawchar/live_steam_main)
 - [getxState](https://github.com/RRKawchar/live_steam_main/tree/getxBranch)
+- [providerState](https://github.com/RRKawchar/live_steam_main/tree/providerState)
 
 ## Features
 
