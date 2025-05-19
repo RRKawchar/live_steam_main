@@ -17,7 +17,7 @@ class LiveStreamProvider with ChangeNotifier{
    bool _isPlaying = false;
    bool _muted = false;
    String _audioFilePath = "";
-  final bool _showUI = false;
+   bool _showUI = false;
    bool _isPaused = false;
 
   RtcEngine get engine=>_engine;
@@ -32,7 +32,7 @@ class LiveStreamProvider with ChangeNotifier{
 
 
   void onSwitchCamera() {
-    engine.switchCamera();
+    _engine.switchCamera();
     notifyListeners();
   }
 
@@ -41,6 +41,11 @@ class LiveStreamProvider with ChangeNotifier{
     _engine.muteLocalAudioStream(_muted);
     notifyListeners();
   }
+
+   void toggleUI() {
+     _showUI = !_showUI;
+     notifyListeners();
+   }
 
 
   void pickAudioFile() async {
@@ -190,15 +195,30 @@ class LiveStreamProvider with ChangeNotifier{
 
 
    void endLiveStream(BuildContext context) async {
-     await engine.leaveChannel();
-     await engine.release();
-       Navigator.of(context).pop();
+     await _engine.leaveChannel();
+     await _engine.release();
+     notifyListeners();
+       Navigator.pop(context);
    }
 
-   void disposeEngine(){
+
+   void disposeEngine() {
      _engine.leaveChannel();
      _engine.release();
+     _localUserJoined = false;
+     _remoteUids.clear();
      _audioPlayer.dispose();
+     _audioFilePath = "";
+     _isPlaying = false;
+     _isPaused = false;
+     _showUI = false;
+     _muted = false;
+   }
+
+
+   void clearAudioFilePath() {
+     _audioFilePath = "";
+     notifyListeners();
    }
 
 

@@ -1,13 +1,12 @@
+
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:rrk_stream_app/src/features/live_streaming/controller/live_streaming_controller.dart';
 import 'package:rrk_stream_app/src/features/live_streaming/provider/live_stream_provider.dart';
 import 'package:rrk_stream_app/src/features/live_streaming/view/widgets/audio_player_widget.dart';
-import 'package:rrk_stream_app/src/features/live_streaming/view/widgets/live_appbar.dart';
 import 'package:rrk_stream_app/src/features/live_streaming/view/widgets/live_control_buttons.dart';
 import 'package:rrk_stream_app/src/features/live_streaming/view/widgets/video_preview_widget.dart';
-import '../../../home/controller/home_controller.dart';
+
+import '../widgets/live_appbar.dart';
 
 class LiveStreamingPage extends StatefulWidget {
   final bool isBroadCaster;
@@ -19,76 +18,72 @@ class LiveStreamingPage extends StatefulWidget {
 }
 
 class _LiveStreamingPageState extends State<LiveStreamingPage> {
+  late LiveStreamProvider _streamProvider;
+  bool _initialized = false;
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-        final streamProvider = Provider.of<LiveStreamProvider>(context, listen: false);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-        streamProvider.initAgora(
-          isBroadcaster: widget.isBroadCaster,
-          channelName: widget.channelName,
-        );
-        streamProvider.initAudioPlayer();
-    });
+    if (!_initialized) {
+      _streamProvider = Provider.of<LiveStreamProvider>(context, listen: false);
+      _streamProvider.initAgora(
+        isBroadcaster: widget.isBroadCaster,
+        channelName: widget.channelName,
+      );
+      _streamProvider.initAudioPlayer();
+      _initialized = true;
+    }
   }
 
   @override
   void dispose() {
-    final streamProvider = Provider.of<LiveStreamProvider>(context, listen: false);
-    streamProvider.disposeEngine();
+    _streamProvider.disposeEngine();
+    _initialized = false;
     super.dispose();
   }
 
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        // title: Obx(()=> streamingController.showUI.value ?
-        // SizedBox.shrink():
-        // LiveAppbar(streamingController: streamingController),)
+        title: Consumer<LiveStreamProvider>(builder: (_,streamProvider,child){
+          return  streamProvider.showUI?
+          SizedBox.shrink():
+          LiveAppbar(streamProvider: streamProvider);
+        }),
       ),
       resizeToAvoidBottomInset: true,
       extendBodyBehindAppBar: true,
-      body: GestureDetector(
-        onTap: () {
-          //streamingController.showUI.value = !streamingController.showUI.value;
-        },
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            // VideoPreviewWidget(
-            //   streamingController: streamingController,
-            //   homeController: homeController,
-            // ),
+      body: Consumer<LiveStreamProvider>(
+          builder: (_,streamProvider,child){
+           return GestureDetector(
+             onTap: (){
+               streamProvider.toggleUI();
+             },
+             child: Stack(
+               alignment: Alignment.bottomCenter,
+               children: [
+                 VideoPreviewWidget(
+                     isBroadCaster: widget.isBroadCaster,
+                     channelName: widget.channelName,
+                 ),
+                  if(! streamProvider.showUI)...[
+                    AudioPlayerWidget(),
+                    LiveControlButtons(liveStreamProvider: streamProvider)
+                  ]
 
-            VideoPreviewWidget(
-              isBroadCaster: widget.isBroadCaster,
-              channelName: widget.channelName,
-            ),
-
-            streamingController.showUI.value
-                ? SizedBox.shrink()
-                : AudioPlayerWidget(
-              streamingController: streamingController,
-            ),
-            //
-            // streamingController.showUI.value
-            //     ? SizedBox.shrink()
-            //     : LiveControlButtons(
-            //   streamingController: streamingController,
-            // ),
-
-          ],
-        ),
+               ],
+             ),
+           );
+          }
       )
+
     );
   }
 }

@@ -1,11 +1,6 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:rrk_stream_app/src/features/home/controller/home_controller.dart';
-import 'package:rrk_stream_app/src/features/live_streaming/controller/live_streaming_controller.dart';
-
-import '../../../home/provider/home_provider.dart';
 import '../../provider/live_stream_provider.dart';
 
 class VideoPreviewWidget extends StatelessWidget {
@@ -18,8 +13,6 @@ class VideoPreviewWidget extends StatelessWidget {
     return Consumer<LiveStreamProvider>(
       builder: (context, streamProvider, _) {
         List<Widget> views = [];
-
-        // Local view for broadcaster
         if (isBroadCaster && streamProvider.localUserJoined) {
           views.add(
             AgoraVideoView(

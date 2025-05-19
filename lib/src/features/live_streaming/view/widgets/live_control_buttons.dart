@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:rrk_stream_app/src/features/live_streaming/provider/live_stream_provider.dart';
 
-import '../../controller/live_streaming_controller.dart';
 
 class LiveControlButtons extends StatelessWidget {
-  final LiveStreamingController streamingController;
-  const LiveControlButtons({super.key, required this.streamingController});
+  final LiveStreamProvider liveStreamProvider;
+  const LiveControlButtons({super.key, required this.liveStreamProvider});
 
   @override
   Widget build(BuildContext context) {
     return Positioned(bottom: 40, child:Row(
       children: [
         IconButton(
-            onPressed: streamingController.onToggleMute,
-            icon: Obx(()=>Icon(
-              streamingController.muted.value ? Icons.mic_off : Icons.mic,
+            onPressed: liveStreamProvider.onToggleMute,
+            icon: Icon(
+              liveStreamProvider.muted ? Icons.mic_off : Icons.mic,
               size: 30,
               color: Colors.blue,
-            ),)
+            ),
         ),
 
         SizedBox(width: 10),
@@ -26,14 +25,14 @@ class LiveControlButtons extends StatelessWidget {
           radius: 20,
           backgroundColor: Colors.red,
           child: IconButton(
-            onPressed: streamingController.endLiveStream,
+            onPressed: ()=>liveStreamProvider.endLiveStream(context),
             icon: Icon(Icons.call_end, color: Colors.white),
           ),
         ),
         SizedBox(width: 10),
 
         IconButton(
-          onPressed: streamingController.onSwitchCamera,
+          onPressed: liveStreamProvider.onSwitchCamera,
           icon: Icon(
             Icons.switch_camera_outlined,
             size: 30,
