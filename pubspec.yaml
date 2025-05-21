@@ -36,13 +36,14 @@ dependencies:
   cupertino_icons: ^1.0.8
   agora_rtc_engine:
   permission_handler:
-  get:
   audioplayers:
   file_picker:
   flutter_native_splash:
   flutter_easyloading:
   flutter_dotenv:
   provider:
+  flutter_bloc:
+  equatable:
 
 #This package generates native code to customize Flutter's default white native splash screen
 flutter_native_splash:

@@ -1,5 +1,6 @@
 
 import 'package:rrk_stream_app/src/core/core_export/home_export_path.dart';
+import 'package:rrk_stream_app/src/features/live_streaming/view/page/live_stream_page_two.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -93,9 +94,14 @@ class _HomePageState extends State<HomePage> {
         EasyLoading.showToast("Channel Name is required!");
         return;
     }
+    // Navigator.push(context, MaterialPageRoute(builder: (_)=>LiveStreamingPage(
+    //     isBroadCaster: isBroadcaster,
+    //     channelName: _channelName.text.trim(),
+    // )));
+
     Navigator.push(context, MaterialPageRoute(builder: (_)=>LiveStreamingPage(
-        isBroadCaster: isBroadcaster,
-        channelName: _channelName.text.trim(),
+      isBroadcaster: isBroadcaster,
+      channelName: _channelName.text.trim(),
     )));
   }
 }
