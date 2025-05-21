@@ -1,7 +1,9 @@
 # 📡 RRK Stream App
 ## State Management
-- [setState](https://github.com/RRKawchar/live_steam_main)
-- [getxState](https://github.com/RRKawchar/live_steam_main/tree/getxBranch)
+- [setState](https://github.com/RRKawchar/live_streaming_demo/tree/setState)
+- [Getx](https://github.com/RRKawchar/live_steam_main/tree/getxBranch)
+- [Provider](https://github.com/RRKawchar/live_steam_main/tree/providerState)
+- [Bloc](https://github.com/RRKawchar/live_steam_main/tree/blocState)
 
 ## Features
 
